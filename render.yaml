@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: medical-symptom-analyzer
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    plan: free
+    environmentVariables:
+      - key: FLASK_ENV
+        value: production
+      - key: HOST
+        value: "0.0.0.0"
+      - key: PORT
+        value: "10000"
+      - key: GEMINI_API_KEY
+        sync: false  # This will be set in Render dashboard
+      - key: SECRET_KEY
+        generateValue: true  # Render will generate a random secret key 
