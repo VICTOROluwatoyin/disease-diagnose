@@ -1,0 +1,637 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">
+            <i class="fas fa-camera-retro me-3"></i>
+            Medical Symptom Analyzer
+        </h1>
+        <p class="hero-subtitle">
+            Upload a photo of your symptoms for preliminary AI analysis
+        </p>
+        <div class="disclaimer">
+            <i class="fas fa-exclamation-triangle disclaimer-icon"></i>
+            <strong>Medical Disclaimer:</strong> This tool provides preliminary analysis only. 
+            Always consult healthcare professionals for proper diagnosis and treatment.
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">
+                        <i class="fas fa-upload me-2"></i>Choose Your Method
+                    </h3>
+                    
+                    <!-- Help Text -->
+                    <div class="alert alert-info text-center mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>3 Ways to Analyze:</strong> Upload file, use live camera, or share your screen
+                    </div>
+                    
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs mb-4 justify-content-center" id="captureTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-panel" type="button" role="tab">
+                                <i class="fas fa-cloud-upload-alt me-2"></i>Upload Image
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="camera-tab" data-bs-toggle="tab" data-bs-target="#camera-panel" type="button" role="tab">
+                                <i class="fas fa-camera me-2"></i>Live Camera
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="screen-tab" data-bs-toggle="tab" data-bs-target="#screen-panel" type="button" role="tab">
+                                <i class="fas fa-desktop me-2"></i>Screen Share
+                                <span class="badge bg-success ms-1">NEW</span>
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="captureTabContent">
+                        <!-- Upload Panel -->
+                        <div class="tab-pane fade show active" id="upload-panel" role="tabpanel">
+                            <div class="upload-area" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <h4>Drag & Drop or Click to Upload</h4>
+                                <p class="text-muted">
+                                    Supported formats: JPG, PNG, GIF, BMP, WEBP<br>
+                                    Maximum file size: 16MB
+                                </p>
+                                <input type="file" id="fileInput" class="d-none" accept="image/*">
+                                <button class="btn btn-primary btn-lg mt-3" onclick="document.getElementById('fileInput').click()">
+                                    <i class="fas fa-folder-open me-2"></i>Choose File
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Camera Panel -->
+                        <div class="tab-pane fade" id="camera-panel" role="tabpanel">
+                            <div class="camera-container text-center">
+                                <div class="camera-preview mb-3" id="cameraPreview" style="display: none;">
+                                    <video id="cameraVideo" autoplay playsinline style="max-width: 100%; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);"></video>
+                                    <canvas id="cameraCanvas" style="display: none;"></canvas>
+                                </div>
+                                <div class="camera-controls">
+                                    <button class="btn btn-success btn-lg me-2" id="startCameraBtn">
+                                        <i class="fas fa-video me-2"></i>Start Camera
+                                    </button>
+                                    <button class="btn btn-primary btn-lg me-2" id="captureBtn" style="display: none;">
+                                        <i class="fas fa-camera me-2"></i>Capture & Analyze
+                                    </button>
+                                    <button class="btn btn-secondary btn-lg" id="stopCameraBtn" style="display: none;">
+                                        <i class="fas fa-stop me-2"></i>Stop Camera
+                                    </button>
+                                </div>
+                                <div class="camera-placeholder" id="cameraPlaceholder">
+                                    <i class="fas fa-video fa-5x text-muted mb-3"></i>
+                                    <h4>Live Camera Analysis</h4>
+                                    <p class="text-muted">
+                                        Start your camera to capture and analyze symptoms in real-time
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Screen Share Panel -->
+                        <div class="tab-pane fade" id="screen-panel" role="tabpanel">
+                            <div class="screen-container text-center">
+                                <div class="screen-preview mb-3" id="screenPreview" style="display: none;">
+                                    <video id="screenVideo" autoplay playsinline style="max-width: 100%; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);"></video>
+                                    <canvas id="screenCanvas" style="display: none;"></canvas>
+                                </div>
+                                <div class="screen-controls">
+                                    <button class="btn btn-info btn-lg me-2" id="startScreenBtn">
+                                        <i class="fas fa-desktop me-2"></i>Start Screen Share
+                                    </button>
+                                    <button class="btn btn-primary btn-lg me-2" id="captureScreenBtn" style="display: none;">
+                                        <i class="fas fa-camera me-2"></i>Capture & Analyze
+                                    </button>
+                                    <button class="btn btn-secondary btn-lg me-2" id="stopScreenBtn" style="display: none;">
+                                        <i class="fas fa-stop me-2"></i>Stop Sharing
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm" id="testScreenBtn" style="display: none;">
+                                        <i class="fas fa-bug me-1"></i>Test Capture
+                                    </button>
+                                </div>
+                                <div class="screen-placeholder" id="screenPlaceholder">
+                                    <i class="fas fa-desktop fa-5x text-muted mb-3"></i>
+                                    <h4>Screen Share Analysis</h4>
+                                    <p class="text-muted">
+                                        Share your screen to analyze symptoms from other applications or images
+                                    </p>
+                                    <div class="alert alert-light border mt-3">
+                                        <small>
+                                            <i class="fas fa-arrow-down me-1"></i>
+                                            <strong>Click "Start Screen Share" below</strong> to begin
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="loading-spinner" id="loadingSpinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Analyzing...</span>
+                        </div>
+                        <h4 class="mt-3">Analyzing your image...</h4>
+                        <p class="text-muted">This may take a few moments. Please wait.</p>
+                    </div>
+
+                    <div class="analysis-result" id="analysisResult" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4><i class="fas fa-stethoscope me-2"></i>Analysis Results</h4>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="clearResults()">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                        </div>
+                        <div id="resultContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-camera fa-3x text-primary mb-3"></i>
+                    <h5>Live Camera Capture</h5>
+                    <p>Use your device's camera to capture symptoms in real-time for instant analysis.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-desktop fa-3x text-success mb-3"></i>
+                    <h5>Screen Sharing</h5>
+                    <p>Share your screen to analyze symptoms from other applications or medical images.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-brain fa-3x text-info mb-3"></i>
+                    <h5>AI Analysis</h5>
+                    <p>Advanced AI provides instant preliminary analysis and medical recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Important Medical Information</h5>
+                <ul class="mb-0">
+                    <li>This tool is for informational purposes only and should not replace professional medical advice</li>
+                    <li>Seek immediate medical attention for emergency symptoms</li>
+                    <li>Always consult healthcare professionals for proper diagnosis and treatment</li>
+                    <li>Results may not be 100% accurate - use as a preliminary guide only</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Global variables for media streams
+let cameraStream = null;
+let screenStream = null;
+
+// File upload handling
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const loadingSpinner = document.getElementById('loadingSpinner');
+const analysisResult = document.getElementById('analysisResult');
+const resultContent = document.getElementById('resultContent');
+
+// Camera elements
+const cameraVideo = document.getElementById('cameraVideo');
+const cameraCanvas = document.getElementById('cameraCanvas');
+const cameraPreview = document.getElementById('cameraPreview');
+const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+const startCameraBtn = document.getElementById('startCameraBtn');
+const captureBtn = document.getElementById('captureBtn');
+const stopCameraBtn = document.getElementById('stopCameraBtn');
+
+// Screen share elements
+const screenVideo = document.getElementById('screenVideo');
+const screenCanvas = document.getElementById('screenCanvas');
+const screenPreview = document.getElementById('screenPreview');
+const screenPlaceholder = document.getElementById('screenPlaceholder');
+const startScreenBtn = document.getElementById('startScreenBtn');
+const captureScreenBtn = document.getElementById('captureScreenBtn');
+const stopScreenBtn = document.getElementById('stopScreenBtn');
+const testScreenBtn = document.getElementById('testScreenBtn');
+
+// Drag and drop functionality
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        handleFile(files[0]);
+    }
+});
+
+uploadArea.addEventListener('click', () => {
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+    }
+});
+
+// Camera functionality
+startCameraBtn.addEventListener('click', async () => {
+    try {
+        // Check if camera is supported
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showNotification('Camera is not supported in this browser.', 'error');
+            return;
+        }
+        
+        showNotification('Requesting camera access...', 'info');
+        
+        cameraStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                width: { ideal: 1280 }, 
+                height: { ideal: 720 },
+                facingMode: 'environment' // Use back camera on mobile
+            } 
+        });
+        
+        cameraVideo.srcObject = cameraStream;
+        
+        // Wait for video to load
+        cameraVideo.addEventListener('loadedmetadata', () => {
+            cameraPlaceholder.style.display = 'none';
+            cameraPreview.style.display = 'block';
+            startCameraBtn.style.display = 'none';
+            captureBtn.style.display = 'inline-block';
+            stopCameraBtn.style.display = 'inline-block';
+            
+            showNotification('Camera started successfully! Position the symptom in view and click capture.', 'success');
+        });
+        
+    } catch (error) {
+        console.error('Error accessing camera:', error);
+        if (error.name === 'NotAllowedError') {
+            showNotification('Camera permission denied. Please allow camera access and try again.', 'error');
+        } else if (error.name === 'NotFoundError') {
+            showNotification('No camera found. Please check if a camera is connected.', 'error');
+        } else {
+            showNotification('Could not access camera. Please try again.', 'error');
+        }
+    }
+});
+
+captureBtn.addEventListener('click', () => {
+    captureFromVideo(cameraVideo, cameraCanvas, 'camera');
+});
+
+stopCameraBtn.addEventListener('click', () => {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+    cameraPreview.style.display = 'none';
+    cameraPlaceholder.style.display = 'block';
+    startCameraBtn.style.display = 'inline-block';
+    captureBtn.style.display = 'none';
+    stopCameraBtn.style.display = 'none';
+});
+
+// Screen sharing functionality
+startScreenBtn.addEventListener('click', async () => {
+    try {
+        // Check if screen sharing is supported
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+            showNotification('Screen sharing is not supported in this browser.', 'error');
+            return;
+        }
+        
+        showNotification('Please select a screen/window to share...', 'info');
+        
+        screenStream = await navigator.mediaDevices.getDisplayMedia({ 
+            video: { 
+                width: { ideal: 1920 }, 
+                height: { ideal: 1080 },
+                frameRate: { ideal: 30 }
+            },
+            audio: false
+        });
+        
+        screenVideo.srcObject = screenStream;
+        
+        // Wait for video to load
+        screenVideo.addEventListener('loadedmetadata', () => {
+            screenPlaceholder.style.display = 'none';
+            screenPreview.style.display = 'block';
+            startScreenBtn.style.display = 'none';
+            captureScreenBtn.style.display = 'inline-block';
+            stopScreenBtn.style.display = 'inline-block';
+            testScreenBtn.style.display = 'inline-block';
+            
+            showNotification('Screen sharing started! Navigate to the content you want to analyze and click capture.', 'success');
+        });
+        
+        // Handle screen share end
+        screenStream.getVideoTracks()[0].addEventListener('ended', () => {
+            showNotification('Screen sharing stopped.', 'info');
+            stopScreenShare();
+        });
+        
+    } catch (error) {
+        console.error('Error accessing screen:', error);
+        if (error.name === 'NotAllowedError') {
+            showNotification('Screen sharing permission denied. Please allow screen sharing and try again.', 'error');
+        } else if (error.name === 'NotFoundError') {
+            showNotification('No screen sharing source selected.', 'error');
+        } else {
+            showNotification('Could not start screen sharing. Please try again.', 'error');
+        }
+    }
+});
+
+captureScreenBtn.addEventListener('click', () => {
+    captureFromVideo(screenVideo, screenCanvas, 'screen');
+});
+
+stopScreenBtn.addEventListener('click', () => {
+    stopScreenShare();
+});
+
+testScreenBtn.addEventListener('click', () => {
+    // Test capture without analysis
+    try {
+        const canvas = screenCanvas;
+        canvas.width = screenVideo.videoWidth || screenVideo.clientWidth;
+        canvas.height = screenVideo.videoHeight || screenVideo.clientHeight;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
+        
+        const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+        
+        // Create a temporary link to download the image for testing
+        const link = document.createElement('a');
+        link.download = 'screen_test_capture.jpg';
+        link.href = dataURL;
+        link.click();
+        
+        showNotification('Test capture completed! Image downloaded for verification.', 'success');
+    } catch (error) {
+        console.error('Test capture failed:', error);
+        showNotification('Test capture failed. Check console for details.', 'error');
+    }
+});
+
+function stopScreenShare() {
+    if (screenStream) {
+        screenStream.getTracks().forEach(track => track.stop());
+        screenStream = null;
+    }
+    screenPreview.style.display = 'none';
+    screenPlaceholder.style.display = 'block';
+    startScreenBtn.style.display = 'inline-block';
+    captureScreenBtn.style.display = 'none';
+    stopScreenBtn.style.display = 'none';
+    testScreenBtn.style.display = 'none';
+}
+
+function captureFromVideo(video, canvas, source) {
+    try {
+        // Check if video is ready
+        if (video.readyState < 2) {
+            showNotification('Video not ready. Please wait a moment and try again.', 'error');
+            return;
+        }
+        
+        // Set canvas dimensions to match video
+        canvas.width = video.videoWidth || video.clientWidth;
+        canvas.height = video.videoHeight || video.clientHeight;
+        
+        if (canvas.width === 0 || canvas.height === 0) {
+            showNotification('Invalid video dimensions. Please try again.', 'error');
+            return;
+        }
+        
+        // Draw current frame to canvas
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Convert canvas to base64 data URL
+        const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+        
+        if (dataURL && dataURL.length > 100) {
+            showNotification(`Image captured from ${source}! Analyzing...`, 'info');
+            analyzeBase64Image(dataURL, source);
+        } else {
+            showNotification('Failed to capture image. Please try again.', 'error');
+        }
+    } catch (error) {
+        console.error('Error capturing from video:', error);
+        showNotification('Error capturing image. Please try again.', 'error');
+    }
+}
+
+function analyzeBase64Image(dataURL, source) {
+    // Show loading spinner
+    loadingSpinner.style.display = 'block';
+    analysisResult.style.display = 'none';
+    
+    console.log(`Analyzing ${source} capture:`, {
+        dataLength: dataURL.length,
+        dataPrefix: dataURL.substring(0, 50) + '...'
+    });
+    
+    // Send to server for analysis
+    fetch('/analyze_live', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            image: dataURL,
+            type: source
+        })
+    })
+    .then(response => {
+        console.log('Server response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        loadingSpinner.style.display = 'none';
+        console.log('Server response data:', data);
+        
+        if (data.success) {
+            displayResults(data.analysis);
+        } else {
+            displayError(data.error);
+        }
+    })
+    .catch(error => {
+        loadingSpinner.style.display = 'none';
+        displayError('An error occurred while analyzing the image. Please try again.');
+        console.error('Network/Parse error:', error);
+    });
+}
+
+function handleFile(file) {
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        showNotification('Please upload a valid image file (JPG, PNG, GIF, BMP, WEBP)', 'error');
+        return;
+    }
+
+    // Validate file size (16MB)
+    if (file.size > 16 * 1024 * 1024) {
+        showNotification('File size must be less than 16MB', 'error');
+        return;
+    }
+
+    // Show loading spinner
+    loadingSpinner.style.display = 'block';
+    analysisResult.style.display = 'none';
+
+    // Upload file
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        loadingSpinner.style.display = 'none';
+        
+        if (data.success) {
+            displayResults(data.analysis);
+        } else {
+            displayError(data.error);
+        }
+    })
+    .catch(error => {
+        loadingSpinner.style.display = 'none';
+        displayError('An error occurred while processing your image. Please try again.');
+        console.error('Error:', error);
+    });
+}
+
+function displayResults(analysis) {
+    // Format the analysis text with proper styling
+    const formattedAnalysis = formatAnalysis(analysis);
+    resultContent.innerHTML = formattedAnalysis;
+    analysisResult.style.display = 'block';
+    
+    // Scroll to results
+    analysisResult.scrollIntoView({ behavior: 'smooth' });
+}
+
+function formatAnalysis(text) {
+    // Convert markdown-style formatting to HTML
+    let formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+    
+    // Add paragraph tags
+    formatted = '<p>' + formatted + '</p>';
+    
+    // Style severity levels
+    formatted = formatted
+        .replace(/\b(Low|Moderate|High|Emergency)\b/g, '<span class="severity-$1">$1</span>')
+        .replace(/class="severity-Low"/g, 'class="severity-low"')
+        .replace(/class="severity-Moderate"/g, 'class="severity-moderate"')
+        .replace(/class="severity-High"/g, 'class="severity-high"')
+        .replace(/class="severity-Emergency"/g, 'class="severity-emergency"');
+    
+    return formatted;
+}
+
+function displayError(error) {
+    resultContent.innerHTML = `
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Error:</strong> ${error}
+        </div>
+    `;
+    analysisResult.style.display = 'block';
+}
+
+function clearResults() {
+    analysisResult.style.display = 'none';
+    resultContent.innerHTML = '';
+    fileInput.value = '';
+}
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Clean up streams when page unloads
+window.addEventListener('beforeunload', () => {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+    }
+    if (screenStream) {
+        screenStream.getTracks().forEach(track => track.stop());
+    }
+});
+
+// Prevent default drag behaviors
+document.addEventListener('dragover', (e) => {
+    e.preventDefault();
+});
+
+document.addEventListener('drop', (e) => {
+    e.preventDefault();
+});
+</script>
+{% endblock %} 

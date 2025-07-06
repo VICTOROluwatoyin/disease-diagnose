@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}About - Medical Symptom Analyzer{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">
+                        <i class="fas fa-info-circle me-2"></i>About Medical Symptom Analyzer
+                    </h1>
+                    
+                    <div class="alert alert-warning mb-4">
+                        <h4><i class="fas fa-exclamation-triangle me-2"></i>Important Medical Disclaimer</h4>
+                        <p><strong>This application is NOT a substitute for professional medical advice, diagnosis, or treatment.</strong></p>
+                    </div>
+
+                    <section class="mb-5">
+                        <h3><i class="fas fa-bullseye me-2"></i>What This Tool Does</h3>
+                        <p>The Medical Symptom Analyzer uses advanced AI technology to provide preliminary analysis of visual symptoms from uploaded images. It offers:</p>
+                        <ul>
+                            <li>Visual observation of symptoms</li>
+                            <li>Possible medical conditions that might cause similar symptoms</li>
+                            <li>Severity assessment (informational only)</li>
+                            <li>General recommendations for next steps</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h3><i class="fas fa-shield-alt me-2"></i>What This Tool Does NOT Do</h3>
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                <li><strong>Does not provide medical diagnosis</strong></li>
+                                <li><strong>Does not replace professional medical consultation</strong></li>
+                                <li><strong>Does not prescribe treatments or medications</strong></li>
+                                <li><strong>Does not guarantee accuracy of analysis</strong></li>
+                                <li><strong>Does not store or share your medical images</strong></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h3><i class="fas fa-exclamation-triangle me-2"></i>When to Seek Immediate Medical Attention</h3>
+                        <div class="alert alert-danger">
+                            <p><strong>Call emergency services immediately if you experience:</strong></p>
+                            <ul class="mb-0">
+                                <li>Severe chest pain or difficulty breathing</li>
+                                <li>Signs of stroke (facial drooping, arm weakness, speech difficulties)</li>
+                                <li>Severe bleeding or trauma</li>
+                                <li>Loss of consciousness</li>
+                                <li>Severe allergic reactions</li>
+                                <li>Any symptoms that seem life-threatening</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h3><i class="fas fa-user-md me-2"></i>When to Consult a Healthcare Professional</h3>
+                        <p>You should consult a doctor or healthcare provider for:</p>
+                        <ul>
+                            <li>Any concerning symptoms, regardless of this tool's analysis</li>
+                            <li>Persistent or worsening symptoms</li>
+                            <li>Symptoms that interfere with daily activities</li>
+                            <li>Any questions about your health condition</li>
+                            <li>Confirmation of any analysis provided by this tool</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h3><i class="fas fa-cog me-2"></i>How It Works</h3>
+                        <ol>
+                            <li><strong>Image Upload:</strong> You upload a photo of your symptoms</li>
+                            <li><strong>AI Analysis:</strong> Advanced AI examines the image for visual indicators</li>
+                            <li><strong>Pattern Recognition:</strong> The system identifies patterns similar to known medical conditions</li>
+                            <li><strong>Report Generation:</strong> A preliminary analysis report is generated</li>
+                            <li><strong>Recommendations:</strong> General guidance is provided based on the analysis</li>
+                        </ol>
+                    </section>
+
+                    <section class="mb-5">
+                        <h3><i class="fas fa-lock me-2"></i>Privacy & Security</h3>
+                        <ul>
+                            <li>Images are processed temporarily and not stored permanently</li>
+                            <li>No personal information is collected or stored</li>
+                            <li>All uploads are deleted after analysis</li>
+                            <li>No medical records are created or maintained</li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h3><i class="fas fa-exclamation-circle me-2"></i>Limitations</h3>
+                        <div class="alert alert-warning">
+                            <ul class="mb-0">
+                                <li>AI analysis may not be 100% accurate</li>
+                                <li>Some conditions cannot be diagnosed from images alone</li>
+                                <li>Results should be interpreted by healthcare professionals</li>
+                                <li>Tool is not suitable for emergency situations</li>
+                                <li>May not detect all medical conditions</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h3><i class="fas fa-balance-scale me-2"></i>Legal Disclaimer</h3>
+                        <div class="alert alert-info">
+                            <p><strong>By using this application, you acknowledge that:</strong></p>
+                            <ul class="mb-0">
+                                <li>This tool is for informational purposes only</li>
+                                <li>Results are not medical advice or diagnosis</li>
+                                <li>You will consult healthcare professionals for medical concerns</li>
+                                <li>You understand the limitations of AI-based analysis</li>
+                                <li>The developers are not responsible for medical decisions based on this tool</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <div class="text-center">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Analyzer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
